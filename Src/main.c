@@ -93,7 +93,7 @@ int main(void)
   MX_SPI1_Init();
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
-
+  Blink_LEDs();
   /* USER CODE END 2 */
 
   /* Infinite loop */
