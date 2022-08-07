@@ -49,6 +49,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+extern uint32_t UserRxCount;
+
 uint8_t HiMsgCDC[] = "Hello CDC, UART is waiting to receive!\r\n";
 /* USER CODE END PV */
 
@@ -105,7 +107,15 @@ int main(void)
   {
     /* USER CODE END WHILE */
     HAL_Delay(2000);
-    CDC_Transmit_HS(HiMsgCDC, strlen((const char*)HiMsgCDC));
+    //CDC_Transmit_HS(HiMsgCDC, strlen((const char*)HiMsgCDC));
+    if((UserRxCount % 97) == 0)
+    {
+      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
+    }
+    if((UserRxCount % 101) == 0)
+    {
+      HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
+    }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
