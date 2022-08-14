@@ -178,7 +178,7 @@ void USB_DEBUG_Print(const char *fmt, ...)
   
   va_start(argp, fmt);
   len = vsprintf((char*)(&uart_tx_buf[8]), fmt, argp);
-  HAL_UART_Transmit_IT(&huart5, uart_tx_buf, len+8);
+  HAL_UART_Transmit_DMA(&huart5, uart_tx_buf, len+8);
   va_end(argp);
 }
 #endif
