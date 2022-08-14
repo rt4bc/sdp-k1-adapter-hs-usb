@@ -19,9 +19,12 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
+#include "stm32f4xx_hal_def.h"
+#include "stm32f4xx_hal_uart.h"
 
 /* USER CODE BEGIN 0 */
-
+uint8_t uart_tx_buf[128];
+  
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart5;
@@ -109,7 +112,19 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-
+#if defined USB_DEBUG
+void USB_DEBUG_Print(const char *fmt, ...)
+{
+  uint8_t len;
+  va_list argp;
+  
+  va_start(argp, fmt);
+  len = vsprintf((char*)(uart_tx_buf), fmt, argp);
+  /* HAL_UART_Transmit(&huart5, uart_tx_buf, len, HAL_MAX_DELAY); */
+  HAL_UART_Transmit_IT(&huart5, uart_tx_buf, len);
+  va_end(argp);
+}
+#endif
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
