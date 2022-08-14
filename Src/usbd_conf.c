@@ -388,7 +388,17 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   hpcd_USB_OTG_HS.Init.speed = PCD_SPEED_HIGH;
   hpcd_USB_OTG_HS.Init.dma_enable = DISABLE;
   hpcd_USB_OTG_HS.Init.phy_itface = USB_OTG_ULPI_PHY;
+  
+  /* comment by lbc
+SOF pin is used to synchronize an external source of data with a USB frame. The length 
+of a frame can be adjusted in OTG_FS_HFIR register so synchronization is important. 
+The manual mentions audio applications simply because it is an obvious example where 
+samples should arrive at a DAC (or an ADC depending on whether the host side is an 
+audio output or input)at a steady rate. If such synchronicity is not important, one 
+can forget about SOF output and use the pin as a generic GPIO output.
+  */
   hpcd_USB_OTG_HS.Init.Sof_enable = DISABLE;
+
   hpcd_USB_OTG_HS.Init.low_power_enable = DISABLE;
   hpcd_USB_OTG_HS.Init.lpm_enable = DISABLE;
   hpcd_USB_OTG_HS.Init.vbus_sensing_enable = DISABLE;
