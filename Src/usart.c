@@ -19,12 +19,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usart.h"
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_uart.h"
 
 /* USER CODE BEGIN 0 */
+#if defined USB_DEBUG
 uint8_t uart_tx_buf[128];
-  
+#endif
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart5;
@@ -45,6 +44,16 @@ void MX_UART5_Init(void)
   {
     Error_Handler();
   }
+#if defined USB_DEBUG
+  uart_tx_buf[0] = 'U';
+  uart_tx_buf[1] = 'S';
+  uart_tx_buf[2] = 'B';
+  uart_tx_buf[3] = 'L';
+  uart_tx_buf[4] = 'O';
+  uart_tx_buf[5] = 'G';
+  uart_tx_buf[6] = ':';
+  uart_tx_buf[7] = ' ';
+#endif
 
 }
 
@@ -80,6 +89,9 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     GPIO_InitStruct.Alternate = GPIO_AF8_UART5;
     HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+    /* UART5 interrupt Init */
+    HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(UART5_IRQn);
   /* USER CODE BEGIN UART5_MspInit 1 */
 
   /* USER CODE END UART5_MspInit 1 */
@@ -105,6 +117,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
     HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
 
+    /* UART5 interrupt Deinit */
+    HAL_NVIC_DisableIRQ(UART5_IRQn);
   /* USER CODE BEGIN UART5_MspDeInit 1 */
 
   /* USER CODE END UART5_MspDeInit 1 */
@@ -119,9 +133,8 @@ void USB_DEBUG_Print(const char *fmt, ...)
   va_list argp;
   
   va_start(argp, fmt);
-  len = vsprintf((char*)(uart_tx_buf), fmt, argp);
-  /* HAL_UART_Transmit(&huart5, uart_tx_buf, len, HAL_MAX_DELAY); */
-  HAL_UART_Transmit_IT(&huart5, uart_tx_buf, len);
+  len = vsprintf((char*)(&uart_tx_buf[8]), fmt, argp);
+  HAL_UART_Transmit_IT(&huart5, uart_tx_buf, len+8);
   va_end(argp);
 }
 #endif

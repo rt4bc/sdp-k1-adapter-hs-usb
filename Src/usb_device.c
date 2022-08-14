@@ -22,13 +22,13 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "usb_device.h"
-#include "usart.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
 #include "usbd_cdc.h"
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN Includes */
+#include "usart.h"
 #include "custom.h"
 /* USER CODE END Includes */
 
