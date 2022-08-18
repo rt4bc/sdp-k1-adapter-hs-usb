@@ -28,7 +28,7 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_cdc.h"
+#include "usbd_iad.h"
 
 /* USER CODE BEGIN INCLUDE */
 

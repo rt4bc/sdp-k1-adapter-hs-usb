@@ -24,7 +24,7 @@
 #include "usb_device.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
-#include "usbd_cdc.h"
+#include "usbd_iad.h"
 #include "usbd_iad_if.h"
 
 /* USER CODE BEGIN Includes */
