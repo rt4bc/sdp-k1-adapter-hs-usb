@@ -159,25 +159,35 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 {
   0x12,                       /*bLength */
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
-#if (USBD_LPM_ENABLED == 1)
-  0x01,                       /*bcdUSB */ /* changed to USB version 2.01
-                                             in order to support LPM L1 suspend
-                                             resume test of USBCV3.0*/
-#else
-  0x00,                       /*bcdUSB */
-#endif /* (USBD_LPM_ENABLED == 1) */
 
-  0x02,
-  0x00,                       /*bDeviceClass*/
-  0x00,                       /*bDeviceSubClass*/
-  0x00,                       /*bDeviceProtocol*/
+#if (USBD_LPM_ENABLED == 1)
+  0x01,                       /*  changed to USB version 2.01
+                                  in order to support LPM L1 suspend
+                                  resume test of USBCV3.0*/
+#elif (USBD_IAD_ENABLED == 1)
+  0x01,                       /*  changed to USB version 2.01
+                                  For the IAD class test, copy
+                                  definition from cmsis-dap device */
+#else
+  0x00,                       
+#endif /* (USBD_LPM_ENABLED == 1) */
+  0x02,                       /*bcdUSB */
+
+  /*IAD descriptor */
+  /*
+  https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-interface-association-descriptor 
+  */
+  0xEF,                       /*bDeviceClass*/
+  0x02,                       /*bDeviceSubClass*/
+  0x01,                       /*bDeviceProtocol*/
+
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
   HIBYTE(USBD_VID),           /*idVendor*/
   LOBYTE(USBD_PID_HS),        /*idProduct*/
   HIBYTE(USBD_PID_HS),        /*idProduct*/
-  0x00,                       /*bcdDevice rel. 2.00*/
-  0x02,
+  0x00,                       /*bcdDevice rel. 1.00*/
+  0x01,
   USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
   USBD_IDX_SERIAL_STR,        /*Index of serial number string*/

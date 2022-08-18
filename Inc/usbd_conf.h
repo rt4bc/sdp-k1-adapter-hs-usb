@@ -75,6 +75,9 @@
 #define USBD_LPM_ENABLED     0U
 /*---------- -----------*/
 #define USBD_SELF_POWERED     0U
+/*---------- -----------*/
+#define USBD_IAD_ENABLED     1U
+/*---------- -----------*/
 
 /****************************************/
 /* #define for FS and HS identification */
