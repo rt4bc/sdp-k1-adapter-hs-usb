@@ -35,12 +35,23 @@ BUILD_DIR = build
 # source
 ######################################
 # C sources
+# Default usbd function file's name is based on class name
+# Now change it to a composite name iad class
+# change from Src/usbd_cdc_if.c  to Src/usbd_iad_if.c
 C_SOURCES =  \
 Src/custom.c \
 Src/main.c \
 Src/gpio.c \
 Src/stm32f4xx_it.c \
 Src/stm32f4xx_hal_msp.c \
+Src/system_stm32f4xx.c \
+Src/spi.c \
+Src/usart.c \
+Src/usb_device.c \
+Src/usbd_conf.c \
+Src/usbd_desc.c \
+Src/usbd_iad_if.c \
+Src/dma.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c \
@@ -56,23 +67,15 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c \
-Src/system_stm32f4xx.c \
-Src/spi.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c \
-Src/usart.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c \
-Src/usb_device.c \
-Src/usbd_conf.c \
-Src/usbd_desc.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c \
 Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
-Src/usbd_cdc_if.c \
-Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c \
-Src/dma.c
+Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 
 # ASM sources
 ASM_SOURCES =  \
