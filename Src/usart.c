@@ -21,9 +21,7 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#if defined USB_DEBUG
 uint8_t uart_tx_buf[128];
-#endif
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart5;
@@ -46,17 +44,6 @@ void MX_UART5_Init(void)
   {
     Error_Handler();
   }
-
-#if defined USB_DEBUG
-  uart_tx_buf[0] = 'U';
-  uart_tx_buf[1] = 'S';
-  uart_tx_buf[2] = 'B';
-  uart_tx_buf[3] = 'L';
-  uart_tx_buf[4] = 'O';
-  uart_tx_buf[5] = 'G';
-  uart_tx_buf[6] = ':';
-  uart_tx_buf[7] = ' ';
-#endif
 
 }
 
@@ -170,18 +157,17 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-#if defined USB_DEBUG
-void USB_DEBUG_Print(const char *fmt, ...)
+void UART_DEBUG_Print(const char *fmt, ...)
 {
   uint8_t len;
   va_list argp;
   
   va_start(argp, fmt);
-  len = vsprintf((char*)(&uart_tx_buf[8]), fmt, argp);
-  HAL_UART_Transmit_DMA(&huart5, uart_tx_buf, len+8);
+  len = vsprintf((char*)(uart_tx_buf), fmt, argp);
+  HAL_UART_Transmit_DMA(&huart5, uart_tx_buf, len);
   va_end(argp);
 }
-#endif
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

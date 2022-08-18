@@ -66,7 +66,7 @@ USBD_HandleTypeDef hUsbDeviceHS;
 void MX_USB_DEVICE_Init(void)
 {
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
-  USB_DEBUG_Print("Reset USB External Phy USB3340\r\n");
+  USBD_UsrLog("Reset USB External Phy USB3340\r\n");
   
   USB_Phy_Reset();
 

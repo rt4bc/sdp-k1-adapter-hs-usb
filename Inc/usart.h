@@ -45,9 +45,7 @@ extern  uint8_t uart_tx_buf[128];
 void MX_UART5_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-#if defined USB_DEBUG
-  void USB_DEBUG_Print(const char *fmt, ...);
-#endif
+void UART_DEBUG_Print(const char *fmt, ...);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
