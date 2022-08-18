@@ -63,13 +63,13 @@
   * @{
   */
 
-#define USBD_VID     1155
-#define USBD_LANGID_STRING     1033
-#define USBD_MANUFACTURER_STRING     "STMicroelectronics"
-#define USBD_PID_HS     22336
-#define USBD_PRODUCT_STRING_HS     "STM32 Virtual ComPort"
-#define USBD_CONFIGURATION_STRING_HS     "CDC Config"
-#define USBD_INTERFACE_STRING_HS     "CDC Interface"
+#define USBD_VID     0x0456
+#define USBD_LANGID_STRING     0x0409 /*English */
+#define USBD_MANUFACTURER_STRING     "Analog Devices"
+#define USBD_PID_HS     0x0100
+#define USBD_PRODUCT_STRING_HS     "SDP-K1 REV E"
+#define USBD_CONFIGURATION_STRING_HS     "SDP-K1 Config"
+#define USBD_INTERFACE_STRING_HS     "SDP-K1 Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
@@ -161,11 +161,11 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
 
 #if (USBD_LPM_ENABLED == 1)
-  0x01,                       /*  changed to USB version 2.01
+  0x10,                       /*  changed to USB version 2.01
                                   in order to support LPM L1 suspend
                                   resume test of USBCV3.0*/
 #elif (USBD_IAD_ENABLED == 1)
-  0x01,                       /*  changed to USB version 2.01
+  0x10,                       /*  changed to USB version 2.01
                                   For the IAD class test, copy
                                   definition from cmsis-dap device */
 #else
