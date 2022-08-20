@@ -161,15 +161,12 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
 
 #if (USBD_LPM_ENABLED == 1)
-  0x10,                       /*  changed to USB version 2.01
+  0x10,                       /*  changed to USB version 2.10
                                   in order to support LPM L1 suspend
                                   resume test of USBCV3.0*/
-#elif (USBD_IAD_ENABLED == 1)
-  0x10,                       /*  changed to USB version 2.01
-                                  For the IAD class test, copy
-                                  definition from cmsis-dap device */
 #else
-  0x00,                       
+  0x00,                       /* Must be 0x00, otherwise PC OS will try to get 
+                              descriptors by BOS not supported.*/
 #endif /* (USBD_LPM_ENABLED == 1) */
   0x02,                       /*bcdUSB */
 
