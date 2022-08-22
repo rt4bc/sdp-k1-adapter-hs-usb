@@ -248,7 +248,7 @@ void UART5_IRQHandler(void)
 void OTG_HS_EP1_OUT_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_EP1_OUT_IRQn 0 */
-
+  while(1);
   /* USER CODE END OTG_HS_EP1_OUT_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_EP1_OUT_IRQn 1 */
@@ -262,7 +262,7 @@ void OTG_HS_EP1_OUT_IRQHandler(void)
 void OTG_HS_EP1_IN_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_EP1_IN_IRQn 0 */
-
+  while(1);
   /* USER CODE END OTG_HS_EP1_IN_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_EP1_IN_IRQn 1 */
@@ -285,6 +285,9 @@ void OTG_HS_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+void OTG_FS_IRQHandler(void)
+{
+  while(1);
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

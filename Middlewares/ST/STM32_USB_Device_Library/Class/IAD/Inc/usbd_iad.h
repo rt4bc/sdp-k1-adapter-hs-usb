@@ -18,8 +18,8 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USB_CDC_H
-#define __USB_CDC_H
+#ifndef __USB_IAD_H
+#define __USB_IAD_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,15 +32,29 @@ extern "C" {
   * @{
   */
 
-/** @defgroup usbd_cdc
-  * @brief This file is the Header file for usbd_cdc.c
+/** @defgroup usbd_iad
+  * @brief This file is the Header file for usbd_iad.c
   * @{
   */
 
 
-/** @defgroup usbd_cdc_Exported_Defines
+/** @defgroup usbd_iad_Exported_Defines
   * @{
   */
+/* IAD Endpoints parameters: you can fine tune these values depending on the needed baudrates and performance. */
+#define IAD_DATA_HS_MAX_PACKET_SIZE                 512U  /* Endpoint IN & OUT Packet size */
+#define IAD_DATA_FS_MAX_PACKET_SIZE                 64U  /* Endpoint IN & OUT Packet size */
+#define IAD_CMD_PACKET_SIZE                         8U  /* Control Endpoint Packet size */
+
+#define USB_IAD_CONFIG_DESC_SIZ                     34U
+#define IAD_DATA_HS_IN_PACKET_SIZE                  IAD_DATA_HS_MAX_PACKET_SIZE
+#define IAD_DATA_HS_OUT_PACKET_SIZE                 IAD_DATA_HS_MAX_PACKET_SIZE
+
+#define IAD_DATA_FS_IN_PACKET_SIZE                  IAD_DATA_FS_MAX_PACKET_SIZE
+#define IAD_DATA_FS_OUT_PACKET_SIZE                 IAD_DATA_FS_MAX_PACKET_SIZE
+
+
+
 #define CDC_IN_EP                                   0x81U  /* EP1 for data IN */
 #define CDC_OUT_EP                                  0x01U  /* EP1 for data OUT */
 #define CDC_CMD_EP                                  0x82U  /* EP2 for CDC commands */
@@ -136,8 +150,8 @@ typedef struct
   * @{
   */
 
-extern USBD_ClassTypeDef USBD_CDC;
-#define USBD_CDC_CLASS &USBD_CDC
+extern USBD_ClassTypeDef USBD_IAD;
+#define USBD_IAD_CLASS &USBD_IAD
 /**
   * @}
   */
@@ -145,15 +159,15 @@ extern USBD_ClassTypeDef USBD_CDC;
 /** @defgroup USB_CORE_Exported_Functions
   * @{
   */
-uint8_t USBD_CDC_RegisterInterface(USBD_HandleTypeDef *pdev,
+uint8_t USBD_IAD_RegisterInterface(USBD_HandleTypeDef *pdev,
                                    USBD_CDC_ItfTypeDef *fops);
 
-uint8_t USBD_CDC_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff,
+uint8_t USBD_IAD_SetTxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff,
                              uint32_t length);
 
-uint8_t USBD_CDC_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff);
-uint8_t USBD_CDC_ReceivePacket(USBD_HandleTypeDef *pdev);
-uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev);
+uint8_t USBD_IAD_SetRxBuffer(USBD_HandleTypeDef *pdev, uint8_t *pbuff);
+uint8_t USBD_IAD_ReceivePacket(USBD_HandleTypeDef *pdev);
+uint8_t USBD_IAD_TransmitPacket(USBD_HandleTypeDef *pdev);
 /**
   * @}
   */
@@ -162,7 +176,7 @@ uint8_t USBD_CDC_TransmitPacket(USBD_HandleTypeDef *pdev);
 }
 #endif
 
-#endif  /* __USB_CDC_H */
+#endif  /* __USB_IAD_H */
 /**
   * @}
   */

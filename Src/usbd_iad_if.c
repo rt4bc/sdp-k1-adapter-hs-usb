@@ -129,11 +129,11 @@ extern USBD_HandleTypeDef hUsbDeviceHS;
   * @{
   */
 
-static int8_t CDC_Init_HS(void);
-static int8_t CDC_DeInit_HS(void);
-static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length);
-static int8_t CDC_Receive_HS(uint8_t* pbuf, uint32_t *Len);
-static int8_t CDC_TransmitCplt_HS(uint8_t *pbuf, uint32_t *Len, uint8_t epnum);
+static int8_t IAD_Init_HS(void);
+static int8_t IAD_DeInit_HS(void);
+static int8_t IAD_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length);
+static int8_t IAD_Receive_HS(uint8_t* pbuf, uint32_t *Len);
+static int8_t IAD_TransmitCplt_HS(uint8_t *pbuf, uint32_t *Len, uint8_t epnum);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -145,11 +145,11 @@ static int8_t CDC_TransmitCplt_HS(uint8_t *pbuf, uint32_t *Len, uint8_t epnum);
 
 USBD_CDC_ItfTypeDef USBD_Interface_fops_HS =
 {
-  CDC_Init_HS,
-  CDC_DeInit_HS,
-  CDC_Control_HS,
-  CDC_Receive_HS,
-  CDC_TransmitCplt_HS
+  IAD_Init_HS,
+  IAD_DeInit_HS,
+  IAD_Control_HS,
+  IAD_Receive_HS,
+  IAD_TransmitCplt_HS
 };
 
 /* Private functions ---------------------------------------------------------*/
@@ -158,12 +158,12 @@ USBD_CDC_ItfTypeDef USBD_Interface_fops_HS =
   * @brief  Initializes the CDC media low layer over the USB HS IP
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CDC_Init_HS(void)
+static int8_t IAD_Init_HS(void)
 {
   /* USER CODE BEGIN 8 */
   /* Set Application Buffers */
-  USBD_CDC_SetTxBuffer(&hUsbDeviceHS, UserTxBufferHS, 0);
-  USBD_CDC_SetRxBuffer(&hUsbDeviceHS, UserRxBufferHS);
+  USBD_IAD_SetTxBuffer(&hUsbDeviceHS, UserTxBufferHS, 0);
+  USBD_IAD_SetRxBuffer(&hUsbDeviceHS, UserRxBufferHS);
   return (USBD_OK);
   /* USER CODE END 8 */
 }
@@ -173,7 +173,7 @@ static int8_t CDC_Init_HS(void)
   * @param  None
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CDC_DeInit_HS(void)
+static int8_t IAD_DeInit_HS(void)
 {
   /* USER CODE BEGIN 9 */
   return (USBD_OK);
@@ -187,7 +187,7 @@ static int8_t CDC_DeInit_HS(void)
   * @param  length: Number of data to be sent (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
+static int8_t IAD_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 {
   /* USER CODE BEGIN 10 */
   switch(cmd)
@@ -279,11 +279,11 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   * @param  Len: Number of data received (in bytes)
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CDC_Receive_HS(uint8_t* Buf, uint32_t *Len)
+static int8_t IAD_Receive_HS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 11 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
-  USBD_CDC_ReceivePacket(&hUsbDeviceHS);
+  USBD_IAD_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
+  USBD_IAD_ReceivePacket(&hUsbDeviceHS);
   UserRxCount++;
   return (USBD_OK);
   /* USER CODE END 11 */
@@ -296,7 +296,7 @@ static int8_t CDC_Receive_HS(uint8_t* Buf, uint32_t *Len)
   * @param  Len: Number of data to be sent (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL or USBD_BUSY
   */
-uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len)
+uint8_t IAD_Transmit_HS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 12 */
@@ -304,8 +304,8 @@ uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len)
   if (hcdc->TxState != 0){
     return USBD_BUSY;
   }
-  USBD_CDC_SetTxBuffer(&hUsbDeviceHS, Buf, Len);
-  result = USBD_CDC_TransmitPacket(&hUsbDeviceHS);
+  USBD_IAD_SetTxBuffer(&hUsbDeviceHS, Buf, Len);
+  result = USBD_IAD_TransmitPacket(&hUsbDeviceHS);
   /* USER CODE END 12 */
   return result;
 }
@@ -322,7 +322,7 @@ uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len)
   * @param  Len: Number of data received (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
-static int8_t CDC_TransmitCplt_HS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
+static int8_t IAD_TransmitCplt_HS(uint8_t *Buf, uint32_t *Len, uint8_t epnum)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 14 */
