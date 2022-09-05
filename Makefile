@@ -75,6 +75,7 @@ Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c \
 Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c \
+Middlewares/ST/STM32_USB_Device_Library/Class/HID/Src/usbd_hid.c \
 Middlewares/ST/STM32_USB_Device_Library/Class/IAD/Src/usbd_iad.c
 
 # ASM sources

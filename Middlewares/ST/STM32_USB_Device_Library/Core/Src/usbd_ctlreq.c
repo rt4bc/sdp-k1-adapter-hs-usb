@@ -22,6 +22,7 @@
 #include "usbd_ioreq.h"
 #include "usbd_hid.h"
 
+#include "usart.h"
 /** @addtogroup STM32_USBD_STATE_DEVICE_LIBRARY
   * @{
   */
@@ -398,9 +399,6 @@ static void USBD_GetDescriptor(USBD_HandleTypeDef *pdev, USBD_SetupReqTypedef *r
     }
     break;
 #endif
-  case HID_DESCRIPTOR_TYPE:
-  asm("nop");
-  break;
 
   case USB_DESC_TYPE_DEVICE:
     pbuf = pdev->pDesc->GetDeviceDescriptor(pdev->dev_speed, &len);

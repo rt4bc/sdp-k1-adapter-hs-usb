@@ -29,7 +29,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "custom.h"
-
 #include "usbd_iad_if.h"
 /* USER CODE END Includes */
 
@@ -40,6 +39,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define MOUSE_REPORT_SIZE 3
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,6 +51,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+extern USBD_HandleTypeDef hUsbDeviceHS;
 
 /* USER CODE END PV */
 
@@ -107,7 +109,8 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    USBD_IAD_DataIn(&hUsbDeviceHS, 0x81);
+    HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
