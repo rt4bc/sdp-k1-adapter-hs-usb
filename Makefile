@@ -22,7 +22,7 @@ TARGET = sdp-k1-adapter-hs-usb
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -Og
+OPT = -O0
 
 
 #######################################

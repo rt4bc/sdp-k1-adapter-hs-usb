@@ -592,7 +592,7 @@ uint32_t report_size = 3;
 {
   USBD_CDC_HandleTypeDef *hcdc;
   PCD_HandleTypeDef *hpcd = pdev->pData;
-
+#if 0
   if (pdev->pClassData == NULL)
   {
     return (uint8_t)USBD_FAIL;
@@ -615,8 +615,24 @@ uint32_t report_size = 3;
     //((USBD_CDC_ItfTypeDef *)pdev->pUserData)->TransmitCplt(hcdc->TxBuffer, &hcdc->TxLength, epnum);
     // ((USBD_CDC_ItfTypeDef *)pdev->pUserData)->TransmitCplt(mouse_report, &report_size, 0x81);
     (void)USBD_LL_Transmit(pdev, 0x81, mouse_report, 3U);
-  }
+    
+    pdev->ep_in[epnum].total_length = 0U;
 
+    /* Send ZLP */
+    (void)USBD_LL_Transmit(pdev, epnum, NULL, 0U);
+  }
+#endif
+  
+  USBD_HID_HandleTypeDef *hhid = (USBD_HID_HandleTypeDef *)pdev->pClassData;
+
+  if (pdev->dev_state == USBD_STATE_CONFIGURED)
+  {
+    //if (hhid->state == HID_IDLE)
+    {
+      //hhid->state = HID_BUSY;
+      (void)USBD_LL_Transmit(pdev, 0x81, mouse_report, 3);
+    }
+  }
   return (uint8_t)USBD_OK;
 }
 

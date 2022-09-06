@@ -484,7 +484,7 @@ USBD_StatusTypeDef USBD_LL_DataInStage(USBD_HandleTypeDef *pdev,
   else if ((pdev->pClass->DataIn != NULL) &&
            (pdev->dev_state == USBD_STATE_CONFIGURED))
   {
-    ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
+    //ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
 
     if (ret != USBD_OK)
     {
