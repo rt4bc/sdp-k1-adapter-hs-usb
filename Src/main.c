@@ -109,7 +109,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    USBD_IAD_DataIn(&hUsbDeviceHS, 0x81);
+    //USBD_IAD_DataIn(&hUsbDeviceHS, 0x81);
     HAL_Delay(2000);
     /* USER CODE BEGIN 3 */
   }

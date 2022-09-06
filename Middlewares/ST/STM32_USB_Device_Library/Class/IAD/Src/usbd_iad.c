@@ -233,7 +233,20 @@ __ALIGN_BEGIN static uint8_t USBD_IAD_CfgHSDesc[USB_IAD_CONFIG_DESC_SIZ] __ALIGN
   0x03,                         /*bmAttributes: Interrupt endpoint*/
   HID_EPIN_SIZE,                /*wMaxPacketSize: 4 Byte max */
   0x00,
-  HID_HS_BINTERVAL,             /*bInterval: Polling Interval */
+  0x10,                         /*bInterval: Polling Interval */
+  /*
+  5.7.4 Interrupt Transfer Bus Access Constraints (usb_20.pdf)
+  An endpoint for an interrupt pipe specifies its desired bus access period. 
+  A full-speed endpoint can specify a desired period from 1 ms to 255 ms. 
+  Low-speed endpoints are limited to specifying only 10 ms to 255 ms. 
+  High-speed endpoints can specify a desired period (2 ^(bInterval-1))x125 us, 
+  where bInterval is in the range 1 to (including) 16.
+  The USB System Software will use this information during configuration to determine a period 
+  that can be sustained. The period provided by the system may be shorter than that desired by 
+  the device up to the shortest period defined by the USB (125 us microframe or 1 ms frame). 
+  The client software and device can depend only on the fact that the host will ensure that the time 
+  duration between two transaction attempts with the endpoint will be no longer than the desired period.
+  */
 
 };
 
