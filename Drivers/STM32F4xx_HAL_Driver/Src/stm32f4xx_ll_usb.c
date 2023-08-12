@@ -505,23 +505,6 @@ HAL_StatusTypeDef USB_SetDevSpeed(USB_OTG_GlobalTypeDef *USBx, uint8_t speed)
   uint32_t USBx_BASE = (uint32_t)USBx;
 
   USBx_DEVICE->DCFG |= speed;
-  USBx_DEVICE->DCFG |= USB_OTG_DCFG_XCVRDLY_Msk;
-  /*
-  https://github.com/hathach/tinyusb/issues/496
-  STM32F2/STM32F4 workaround for USB334x HS fail 
-  It is already known in STM32 community, that F2 and F4 MCUs fail to work with USB334x 
-  (USB3341, USB3343, USB3346, USB3347) (and maybe others) external PHYs in HS mode and 
-  fall back to FS. It is timing problem on ULPI, more in module 2 in USB334x errata. 
-  Workaround was introduced by enabling bit USB_OTG_DCFG_XCVRDLY as mentioned in this community 
-  As mentioned, solution is to enable XCVRDLY in DCFG register. Tested and working with 
-  STM32F446 and USB3343 PHY by setting this bit in set_speed function.forum thread 
-  (you have to load more replies, button on page bottom).
-
-  https://github.com/hathach/tinyusb/pull/1195
-  Fix #496 by setting DCFG_XCVRDLY when using with external ULPI phy. 
-  It has no impact with H743 and currently-working older phy USB3320 
-  (probably a fraction of ms delay). So I guess it is safe to just set it in all cases.
-  */
   return HAL_OK;
 }
 

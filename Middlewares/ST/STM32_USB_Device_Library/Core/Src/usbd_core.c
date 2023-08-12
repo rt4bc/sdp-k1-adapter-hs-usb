@@ -106,19 +106,6 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev,
     pdev->pClass = NULL;
   }
 
-  /* comments by lbc
-  USBD_HandleTypeDef  core handler pdev->(member pConfigDesc functions struct
-  USBD_DescriptorsTypeDef HS_Desc =
-  {
-    USBD_HS_DeviceDescriptor
-  , USBD_HS_LangIDStrDescriptor
-  , USBD_HS_ManufacturerStrDescriptor
-  , USBD_HS_ProductStrDescriptor
-  , USBD_HS_SerialStrDescriptor
-  , USBD_HS_ConfigStrDescriptor
-  , USBD_HS_InterfaceStrDescriptor
-  ...
-  */
   if (pdev->pConfDesc != NULL)
   {
     pdev->pConfDesc = NULL;
@@ -135,7 +122,6 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev,
   pdev->id = id;
 
   /* Initialize low level driver */
-  /* initialize regisers! */
   ret = USBD_LL_Init(pdev);
 
   return ret;
@@ -484,7 +470,7 @@ USBD_StatusTypeDef USBD_LL_DataInStage(USBD_HandleTypeDef *pdev,
   else if ((pdev->pClass->DataIn != NULL) &&
            (pdev->dev_state == USBD_STATE_CONFIGURED))
   {
-    //ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
+    ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
 
     if (ret != USBD_OK)
     {

@@ -1044,7 +1044,7 @@ HAL_StatusTypeDef HAL_PCD_Stop(PCD_HandleTypeDef *hpcd)
 
 #if defined (USB_OTG_FS) || defined (USB_OTG_HS)
 /**
-  * @brief  Handles PCD interrupt request. USB Peripheral Control Driver (PCD)
+  * @brief  Handles PCD interrupt request.
   * @param  hpcd PCD handle
   * @retval HAL status
   */

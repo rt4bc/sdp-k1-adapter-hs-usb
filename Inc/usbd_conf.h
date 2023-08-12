@@ -70,14 +70,11 @@
 /*---------- -----------*/
 #define USBD_MAX_STR_DESC_SIZ     512U
 /*---------- -----------*/
-#define USBD_DEBUG_LEVEL     1U
+#define USBD_DEBUG_LEVEL     0U
 /*---------- -----------*/
 #define USBD_LPM_ENABLED     0U
 /*---------- -----------*/
 #define USBD_SELF_POWERED     0U
-/*---------- -----------*/
-#define USBD_IAD_ENABLED     1U
-/*---------- -----------*/
 
 /****************************************/
 /* #define for FS and HS identification */
@@ -113,11 +110,8 @@
 /* DEBUG macros */
 
 #if (USBD_DEBUG_LEVEL > 0)
-/* #define USBD_UsrLog(...) printf(__VA_ARGS__);\
+#define USBD_UsrLog(...)    printf(__VA_ARGS__);\
                             printf("\n");
-                            */
-#define USBD_UsrLog(...)    UART_DEBUG_Print(__VA_ARGS__);\
-                            UART_DEBUG_Print("\n");
 #else
 #define USBD_UsrLog(...)
 #endif

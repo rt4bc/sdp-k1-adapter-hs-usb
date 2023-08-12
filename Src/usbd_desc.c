@@ -63,13 +63,13 @@
   * @{
   */
 
-#define USBD_VID     0x0456
-#define USBD_LANGID_STRING     0x0409 /*English */
-#define USBD_MANUFACTURER_STRING     "Analog Devices"
-#define USBD_PID_HS     0x0100
-#define USBD_PRODUCT_STRING_HS     "SDP-K1 REV E"
-#define USBD_CONFIGURATION_STRING_HS     "SDP-K1 Config"
-#define USBD_INTERFACE_STRING_HS     "SDP-K1 Interface"
+#define USBD_VID     1155
+#define USBD_LANGID_STRING     1033
+#define USBD_MANUFACTURER_STRING     "STMicroelectronics"
+#define USBD_PID_HS     22336
+#define USBD_PRODUCT_STRING_HS     "STM32 Virtual ComPort"
+#define USBD_CONFIGURATION_STRING_HS     "CDC Config"
+#define USBD_INTERFACE_STRING_HS     "CDC Interface"
 
 #define USB_SIZ_BOS_DESC            0x0C
 
@@ -159,32 +159,25 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 {
   0x12,                       /*bLength */
   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
-
 #if (USBD_LPM_ENABLED == 1)
-  0x10,                       /*  changed to USB version 2.10
-                                  in order to support LPM L1 suspend
-                                  resume test of USBCV3.0*/
+  0x01,                       /*bcdUSB */ /* changed to USB version 2.01
+                                             in order to support LPM L1 suspend
+                                             resume test of USBCV3.0*/
 #else
-  0x00,                       /* Must be 0x00, otherwise PC OS will try to get 
-                              descriptors by BOS not supported.*/
+  0x00,                       /*bcdUSB */
 #endif /* (USBD_LPM_ENABLED == 1) */
-  0x02,                       /*bcdUSB */
 
-  /*IAD descriptor */
-  /*
-  https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon/usb-interface-association-descriptor 
-  */
-  0xEF,                       /*bDeviceClass*/
+  0x02,
+  0x02,                       /*bDeviceClass*/
   0x02,                       /*bDeviceSubClass*/
-  0x01,                       /*bDeviceProtocol*/
-
+  0x00,                       /*bDeviceProtocol*/
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
   HIBYTE(USBD_VID),           /*idVendor*/
   LOBYTE(USBD_PID_HS),        /*idProduct*/
   HIBYTE(USBD_PID_HS),        /*idProduct*/
-  0x00,                       /*bcdDevice rel. 1.00*/
-  0x01,
+  0x00,                       /*bcdDevice rel. 2.00*/
+  0x02,
   USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
   USBD_IDX_SERIAL_STR,        /*Index of serial number string*/

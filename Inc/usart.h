@@ -6,7 +6,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2022 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2023 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -45,7 +45,7 @@ extern  uint8_t uart_tx_buf[128];
 void MX_UART5_Init(void);
 
 /* USER CODE BEGIN Prototypes */
-void UART_DEBUG_Print(const char *fmt, ...);
+void UART_Debug_Print(const char *fmt, ...);
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

@@ -7,14 +7,14 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./build/sdp-k1-adapter-hs-usb.elf",
+            "executable": "./build/sdp-k1-hs-usb-example.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
             "servertype": "openocd",
             "configFiles": [ 
                 "interface/cmsis-dap.cfg",
-                "target/stm32f4x.cfg"]
+                "target/stm32f4x.cfg"],
         }
     ]
 }

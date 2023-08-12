@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : usbd_cdc_if.h
+  * @file           : usbd_iad_if.h
   * @version        : v1.0_Cube
-  * @brief          : Header for usbd_cdc_if.c file.
+  * @brief          : Header for usbd_iad_if.c file.
   ******************************************************************************
   * @attention
   *
@@ -20,8 +20,8 @@
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USBD_CDC_IF_H__
-#define __USBD_CDC_IF_H__
+#ifndef __USBD_IAD_IF_H__
+#define __USBD_IAD_IF_H__
 
 #ifdef __cplusplus
  extern "C" {
@@ -39,12 +39,12 @@
   * @{
   */
   
-/** @defgroup USBD_CDC_IF USBD_CDC_IF
+/** @defgroup USBD_IAD_IF USBD_IAD_IF
   * @brief Usb VCP device module
   * @{
   */ 
 
-/** @defgroup USBD_CDC_IF_Exported_Defines USBD_CDC_IF_Exported_Defines
+/** @defgroup USBD_IAD_IF_Exported_Defines USBD_IAD_IF_Exported_Defines
   * @brief Defines.
   * @{
   */
@@ -56,7 +56,7 @@
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Types USBD_CDC_IF_Exported_Types
+/** @defgroup USBD_IAD_IF_Exported_Types USBD_IAD_IF_Exported_Types
   * @brief Types.
   * @{
   */
@@ -69,7 +69,7 @@
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Macros USBD_CDC_IF_Exported_Macros
+/** @defgroup USBD_IAD_IF_Exported_Macros USBD_IAD_IF_Exported_Macros
   * @brief Aliases.
   * @{
   */
@@ -82,13 +82,13 @@
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_Variables USBD_CDC_IF_Exported_Variables
+/** @defgroup USBD_IAD_IF_Exported_Variables USBD_IAD_IF_Exported_Variables
   * @brief Public variables.
   * @{
   */
 
 /** CDC Interface callback. */
-extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
+extern USBD_IAD_ItfTypeDef USBD_Interface_fops_HS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
@@ -98,7 +98,7 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_HS;
   * @}
   */
 
-/** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype USBD_CDC_IF_Exported_FunctionsPrototype
+/** @defgroup USBD_IAD_IF_Exported_FunctionsPrototype USBD_IAD_IF_Exported_FunctionsPrototype
   * @brief Public functions declaration.
   * @{
   */
@@ -125,6 +125,6 @@ uint8_t CDC_Transmit_HS(uint8_t* Buf, uint16_t Len);
 }
 #endif
 
-#endif /* __USBD_CDC_IF_H__ */
+#endif /* __USBD_IAD_IF_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
