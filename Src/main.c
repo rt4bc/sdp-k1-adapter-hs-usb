@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "custom.h"
 #include "usbd_cdc_if.h"
+#include "stm32f4xx_ll_usb.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,7 +40,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MOUSE_REPORT_SIZE 3
 
 /* USER CODE END PD */
 
@@ -51,8 +51,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern USBD_HandleTypeDef hUsbDeviceHS;
-
+extern uint32_t usb_int_counter;
+extern uint32_t rx_len;
+extern uint8_t UserRxBufferHS[];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -100,17 +101,30 @@ int main(void)
   MX_UART5_Init();
   /* USER CODE BEGIN 2 */
   Blink_LEDs();
+  /* Print Banner */
+
+  Debug_Print("*****************************************\n");
+  Debug_Print("--------   SPK-K1 USB Example   ---------\n");
 
   MX_USB_DEVICE_Init();
   /* USER CODE END 2 */
-
+  uint32_t loop;
+  uint32_t len;
+  loop = 0;
+  uint8_t buf[128];
+  rx_len = 0;
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
+    HAL_Delay(1000);
+    //if(rx_len>0)
+    //{
+    //  
+    //  HAL_UART_Transmit(&huart5, UserRxBufferHS, rx_len, HAL_MAX_DELAY);
+    //  rx_len = 0;
+    //}
   }
   /* USER CODE END 3 */
 }
@@ -172,18 +186,18 @@ void SystemClock_Config(void)
 
 void Blink_LEDs(void)
 {
-    for(int i=0; i<5; i++)
+    for(int i=0; i<3; i++)
   {
     HAL_GPIO_WritePin(MCU_STATUS_GPIO_Port, MCU_STATUS_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED_ORANGE_GPIO_Port, LED_ORANGE_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-    HAL_Delay(300);
+    HAL_Delay(200);
     HAL_GPIO_WritePin(MCU_STATUS_GPIO_Port, MCU_STATUS_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LED_ORANGE_GPIO_Port, LED_ORANGE_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-    HAL_Delay(300);
+    HAL_Delay(200);
   }
   HAL_GPIO_WritePin(MCU_STATUS_GPIO_Port, MCU_STATUS_Pin, GPIO_PIN_SET);
 

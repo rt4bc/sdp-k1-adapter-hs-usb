@@ -85,6 +85,7 @@ HAL_StatusTypeDef USB_CoreInit(USB_OTG_GlobalTypeDef *USBx, USB_OTG_CfgTypeDef c
 
   if (cfg.phy_itface == USB_OTG_ULPI_PHY)
   {
+    /* if ulpi phy, then disabled fs transceiver */
     USBx->GCCFG &= ~(USB_OTG_GCCFG_PWRDWN);
 
     /* Init The ULPI Interface */
@@ -221,6 +222,7 @@ HAL_StatusTypeDef USB_SetTurnaroundTime(USB_OTG_GlobalTypeDef *USBx,
 HAL_StatusTypeDef USB_EnableGlobalInt(USB_OTG_GlobalTypeDef *USBx)
 {
   USBx->GAHBCFG |= USB_OTG_GAHBCFG_GINT;
+  /*=1 unmask*/
   return HAL_OK;
 }
 
@@ -284,12 +286,14 @@ HAL_StatusTypeDef USB_DevInit(USB_OTG_GlobalTypeDef *USBx, USB_OTG_CfgTypeDef cf
   {
     USBx->DIEPTXF[i] = 0U;
   }
+  /* endpoint transmit fifo size reigster clear*/
 
 #if defined(STM32F446xx) || defined(STM32F469xx) || defined(STM32F479xx) || defined(STM32F412Zx) || defined(STM32F412Vx) || defined(STM32F412Rx) || defined(STM32F412Cx) || defined(STM32F413xx) || defined(STM32F423xx)
   /* VBUS Sensing setup */
   if (cfg.vbus_sensing_enable == 0U)
   {
-    USBx_DEVICE->DCTL |= USB_OTG_DCTL_SDIS;
+    USBx_DEVICE->DCTL |= USB_OTG_DCTL_SDIS; 
+    /* soft disconnect */
 
     /* Deactivate VBUS Sensing B */
     USBx->GCCFG &= ~USB_OTG_GCCFG_VBDEN;
@@ -452,7 +456,7 @@ HAL_StatusTypeDef USB_DevInit(USB_OTG_GlobalTypeDef *USBx, USB_OTG_CfgTypeDef cf
   */
 HAL_StatusTypeDef USB_FlushTxFifo(USB_OTG_GlobalTypeDef *USBx, uint32_t num)
 {
-  uint32_t count = 0U;
+  volatile uint32_t count = 0U;
 
   USBx->GRSTCTL = (USB_OTG_GRSTCTL_TXFFLSH | (num << 6));
 
@@ -474,7 +478,7 @@ HAL_StatusTypeDef USB_FlushTxFifo(USB_OTG_GlobalTypeDef *USBx, uint32_t num)
   */
 HAL_StatusTypeDef USB_FlushRxFifo(USB_OTG_GlobalTypeDef *USBx)
 {
-  uint32_t count = 0;
+  volatile uint32_t count = 0;
 
   USBx->GRSTCTL = USB_OTG_GRSTCTL_RXFFLSH;
 
@@ -1142,7 +1146,7 @@ HAL_StatusTypeDef  USB_DevConnect(USB_OTG_GlobalTypeDef *USBx)
   /* In case phy is stopped, ensure to ungate and restore the phy CLK */
   USBx_PCGCCTL &= ~(USB_OTG_PCGCCTL_STOPCLK | USB_OTG_PCGCCTL_GATECLK);
 
-  USBx_DEVICE->DCTL &= ~USB_OTG_DCTL_SDIS;
+  USBx_DEVICE->DCTL &= ~USB_OTG_DCTL_SDIS; /* = 0 is connect*/
 
   return HAL_OK;
 }
@@ -1157,9 +1161,11 @@ HAL_StatusTypeDef  USB_DevDisconnect(USB_OTG_GlobalTypeDef *USBx)
   uint32_t USBx_BASE = (uint32_t)USBx;
 
   /* In case phy is stopped, ensure to ungate and restore the phy CLK */
+  /* usb otg power and clock gating control reigster*/
   USBx_PCGCCTL &= ~(USB_OTG_PCGCCTL_STOPCLK | USB_OTG_PCGCCTL_GATECLK);
 
   USBx_DEVICE->DCTL |= USB_OTG_DCTL_SDIS;
+  /* soft disconnect*/
 
   return HAL_OK;
 }
@@ -1335,7 +1341,8 @@ HAL_StatusTypeDef USB_EP0_OutStart(USB_OTG_GlobalTypeDef *USBx, uint8_t dma, uin
   */
 static HAL_StatusTypeDef USB_CoreReset(USB_OTG_GlobalTypeDef *USBx)
 {
-  uint32_t count = 0U;
+  /* in case optimize by gcc, declare to volatile type */
+  volatile uint32_t count = 0U;
 
   /* Wait for AHB master IDLE state. */
   do

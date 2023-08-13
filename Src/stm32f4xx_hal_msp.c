@@ -22,7 +22,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 /* USER CODE BEGIN Includes */
-
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,6 +64,8 @@
 void HAL_MspInit(void)
 {
   /* USER CODE BEGIN MspInit 0 */
+  
+  /*from stm32f4xx_hal.c */
 
   /* USER CODE END MspInit 0 */
 

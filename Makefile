@@ -24,6 +24,7 @@ DEBUG = 1
 # optimization
 OPT = -O0
 
+DEBUG_PRINT = 1
 
 #######################################
 # paths
@@ -150,6 +151,9 @@ ifeq ($(DEBUG), 1)
 CFLAGS += -g -gdwarf-2
 endif
 
+ifeq ($(DEBUG_PRINT), 1)
+C_DEFS += -DDEBUG_PRINT
+endif
 
 # Generate dependency information
 CFLAGS += -MMD -MP -MF"$(@:%.o=%.d)"

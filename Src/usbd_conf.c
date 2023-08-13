@@ -380,24 +380,48 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   /* Init USB Ip. */
   if (pdev->id == DEVICE_HS) {
   /* Link the driver to the stack. */
+  /* just like linux driver, link back to upper device handle
+  * hpcd_USB_OTG_HS*/
   hpcd_USB_OTG_HS.pData = pdev;
   pdev->pData = &hpcd_USB_OTG_HS;
 
   hpcd_USB_OTG_HS.Instance = USB_OTG_HS;
-  hpcd_USB_OTG_HS.Init.dev_endpoints = 8;
+  /*usb otghs register base address*/
+
+  hpcd_USB_OTG_HS.Init.dev_endpoints = 8; 
+  /* usb device role max has 8 endpoints for stm32f469*/
+
   hpcd_USB_OTG_HS.Init.speed = PCD_SPEED_HIGH;
   hpcd_USB_OTG_HS.Init.dma_enable = DISABLE;
+  /* already disabled, if fs en will be checked. disable again.*/
   hpcd_USB_OTG_HS.Init.phy_itface = USB_OTG_ULPI_PHY;
   hpcd_USB_OTG_HS.Init.Sof_enable = DISABLE;
+  /*SOF令牌包是最广泛的令牌包，由主机发送。在实机的抓包工具过程，由于和NAK包大量存在，
+  都会在软件配置中不显示。但这并不代表这个SOF令牌包不重要。
+  SOF令牌不需要像其它令牌一样，具有握手包。因此发送给设备的SOF包并不能保证一定会收到。
+  SOF数据流管理由USB主机发送一个SOF令牌包。SOF数据流管理表示USB帧或者USB微帧的开始。
+  整个数据流管理过程没有数据阶段，所以也不需要USB设备进行握手响应。
+  两个SOF包之间叫做一个帧或者微帧。
+  对于全速和低速传输，每隔1±0.0005ms产生一个SOF令牌包。
+  对于高速USB传输，每隔125us±0.0625us产生一个微帧。而每隔7个微帧，产生一个SOF令牌包。
+  USB主机中的根集线器会将SOF包广播给所有的USB设备，所以SOF包不需要包含目标高地址和目标端口信息，
+  因为它面向的是所有设备的。
+  */
+
   hpcd_USB_OTG_HS.Init.low_power_enable = DISABLE;
   hpcd_USB_OTG_HS.Init.lpm_enable = DISABLE;
+  /* low power mode & link power management need to have a try*/
+
   hpcd_USB_OTG_HS.Init.vbus_sensing_enable = DISABLE;
-  hpcd_USB_OTG_HS.Init.use_dedicated_ep1 = DISABLE;
+  hpcd_USB_OTG_HS.Init.use_dedicated_ep1 = DISABLE; 
+  /* should have a try to enable ep1 interrupt */
+
   hpcd_USB_OTG_HS.Init.use_external_vbus = DISABLE;
   if (HAL_PCD_Init(&hpcd_USB_OTG_HS) != HAL_OK)
   {
     Error_Handler( );
   }
+  /*after this, finish */
 
 #if (USE_HAL_PCD_REGISTER_CALLBACKS == 1U)
   /* Register USB PCD CallBacks */
@@ -414,9 +438,9 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   HAL_PCD_RegisterIsoOutIncpltCallback(&hpcd_USB_OTG_HS, PCD_ISOOUTIncompleteCallback);
   HAL_PCD_RegisterIsoInIncpltCallback(&hpcd_USB_OTG_HS, PCD_ISOINIncompleteCallback);
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
-  HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_HS, 0x200);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 0, 0x80);
-  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 1, 0x174);
+  HAL_PCDEx_SetRxFiFo(&hpcd_USB_OTG_HS, 0x200); /*2KB*/
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 0, 0x80); /*512B*/
+  HAL_PCDEx_SetTxFiFo(&hpcd_USB_OTG_HS, 1, 0x174); /*1488*/
   }
   return USBD_OK;
 }

@@ -21,7 +21,10 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-uint8_t uart_tx_buf[128];
+#ifdef DEBUG_PRINT
+uint8_t uart_debug_print_tx_buf[128];
+#endif
+
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart5;
@@ -157,16 +160,22 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
+#ifdef DEBUG_PRINT
 void UART_Debug_Print(const char *fmt, ...)
 {
   uint8_t len;
   va_list argp;
   
+  do{
+    
+  }while(HAL_UART_GetState(&huart5) != HAL_UART_STATE_READY);
+
   va_start(argp, fmt);
-  len = vsprintf((char*)(uart_tx_buf), fmt, argp);
-  HAL_UART_Transmit_DMA(&huart5, uart_tx_buf, len);
+  len = vsprintf((char*)(uart_debug_print_tx_buf), fmt, argp);
+  HAL_UART_Transmit_DMA(&huart5, uart_debug_print_tx_buf, len);
   va_end(argp);
 }
+#endif
 
 /* USER CODE END 1 */
 

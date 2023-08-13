@@ -66,7 +66,7 @@ USBD_HandleTypeDef hUsbDeviceHS;
 void MX_USB_DEVICE_Init(void)
 {
   /* USER CODE BEGIN USB_DEVICE_Init_PreTreatment */
-  USBD_UsrLog("Reset USB External Phy USB3340\r\n");
+  Debug_Print("Reset USB External Phy USB3340\r\n");
   
   USB_Phy_Reset();
 
@@ -77,14 +77,20 @@ void MX_USB_DEVICE_Init(void)
   {
     Error_Handler();
   }
+  Debug_Print("USBD_Init Done, to proper state, but usb core in reset state.\n");
+
   if (USBD_RegisterClass(&hUsbDeviceHS, &USBD_CDC) != USBD_OK)
   {
     Error_Handler();
   }
+  Debug_Print("USBD_RegisterClass Done, to proper state, but usb core in reset state.\n");
+
   if (USBD_CDC_RegisterInterface(&hUsbDeviceHS, &USBD_Interface_fops_HS) != USBD_OK)
   {
     Error_Handler();
   }
+  Debug_Print("USBD_CDC_RegisterInterface  Done, to proper state, but usb core in reset state.\n");
+
   if (USBD_Start(&hUsbDeviceHS) != USBD_OK)
   {
     Error_Handler();

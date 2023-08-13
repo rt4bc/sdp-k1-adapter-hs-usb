@@ -36,8 +36,8 @@
 extern UART_HandleTypeDef huart5;
 
 /* USER CODE BEGIN Private defines */
-#if defined USB_DEBUG
-extern  uint8_t uart_tx_buf[128];
+#ifdef DEBUG_PRINT
+extern  uint8_t uart_debug_print_tx_buf[128];
 #endif
 
 /* USER CODE END Private defines */
@@ -45,7 +45,13 @@ extern  uint8_t uart_tx_buf[128];
 void MX_UART5_Init(void);
 
 /* USER CODE BEGIN Prototypes */
+#if DEBUG_PRINT
 void UART_Debug_Print(const char *fmt, ...);
+#define Debug_Print(fmt, args...) UART_Debug_Print(fmt, ## args)
+#else
+#define Debug_Print(...) do{} while(0)
+#endif
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

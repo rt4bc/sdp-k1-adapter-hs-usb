@@ -133,7 +133,7 @@ HAL_StatusTypeDef HAL_PCD_Init(PCD_HandleTypeDef *hpcd)
 
   /* Check the parameters */
   assert_param(IS_PCD_ALL_INSTANCE(hpcd->Instance));
-
+  /* usb base address 0x40040000 */
   USBx = hpcd->Instance;
 
   if (hpcd->State == HAL_PCD_STATE_RESET)
@@ -166,12 +166,14 @@ HAL_StatusTypeDef HAL_PCD_Init(PCD_HandleTypeDef *hpcd)
 #else
     /* Init the low level hardware : GPIO, CLOCK, NVIC... */
     HAL_PCD_MspInit(hpcd);
+    /*goto usbd_conf.c line46 */
 #endif /* (USE_HAL_PCD_REGISTER_CALLBACKS) */
   }
 
   hpcd->State = HAL_PCD_STATE_BUSY;
 
   /* Disable DMA mode for FS instance */
+  /* 0x4004003c:     0x00002100 bi8=1 just for otghs */
   if ((USBx->CID & (0x1U << 8)) == 0U)
   {
     hpcd->Init.dma_enable = 0U;
@@ -189,8 +191,13 @@ HAL_StatusTypeDef HAL_PCD_Init(PCD_HandleTypeDef *hpcd)
 
   /* Force Device Mode*/
   (void)USB_SetCurrentMode(hpcd->Instance, USB_DEVICE_MODE);
+  /* force to normal mode first , then depend on second parameters, 
+  * set to be device_mode or host_mode 
+  */
 
   /* Init endpoints structures */
+  /* USB_SetCurrentMode is Init -> */
+  /* here stm32f468 has 8 endpoints */
   for (i = 0U; i < hpcd->Init.dev_endpoints; i++)
   {
     /* Init ep structure */
@@ -1009,7 +1016,7 @@ HAL_StatusTypeDef HAL_PCD_Start(PCD_HandleTypeDef *hpcd)
     USBx->GCCFG |= USB_OTG_GCCFG_PWRDWN;
   }
 
-  __HAL_PCD_ENABLE(hpcd);
+  __HAL_PCD_ENABLE(hpcd); /*enable global int*/
   (void)USB_DevConnect(hpcd->Instance);
   __HAL_UNLOCK(hpcd);
 
@@ -1062,9 +1069,11 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
     /* avoid spurious interrupt */
     if (__HAL_PCD_IS_INVALID_INTERRUPT(hpcd))
     {
+      /*here will be some 杂散 interrupt, should be from stm32 itself*/
       return;
     }
 
+    /*mode mismatch interrupt */
     if (__HAL_PCD_GET_FLAG(hpcd, USB_OTG_GINTSTS_MMIS))
     {
       /* incorrect mode, acknowledge the interrupt */
@@ -1075,13 +1084,31 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
     if (__HAL_PCD_GET_FLAG(hpcd, USB_OTG_GINTSTS_RXFLVL))
     {
       USB_MASK_INTERRUPT(hpcd->Instance, USB_OTG_GINTSTS_RXFLVL);
+      /* here the stm32 usb global interupt-mask and interrupt-state */
 
       temp = USBx->GRXSTSP;
+      /*
+      ug page1348, otg_grxstsr(p) return the received packet status(IN,...)
+      DPID data package id(data0, data1, data2, mdata)
+      bcnt, byte count
+      chnum channle number. ----------> just be the endpoint number.
+      this operation need to confirm rxflvl bit in otg_gintsts is asserted.
+      */
 
-      ep = &hpcd->OUT_ep[temp & USB_OTG_GRXSTSP_EPNUM];
+      ep = &hpcd->OUT_ep[temp & USB_OTG_GRXSTSP_EPNUM]; /* get endpoint number firstly*/
+      /* as rceive fifo is full, so must be the out endpoint ? 
+      that should be , just because USB Host start the process
+      */
 
-      if (((temp & USB_OTG_GRXSTSP_PKTSTS) >> 17) ==  STS_DATA_UPDT)
+      if (((temp & USB_OTG_GRXSTSP_PKTSTS) >> 17) ==  STS_DATA_UPDT) 
+      /*check otg_grxstsr(p) bit 20-17 indicate status of recevied pacakge
+      1 = global out nak
+      2 = out data packet received
+      3 = out transfer completed
+      4 = setup transcation completd
+      6 = setup data packet received */
       {
+        /*2 = in data packet received*/
         if ((temp & USB_OTG_GRXSTSP_BCNT) != 0U)
         {
           (void)USB_ReadPacket(USBx, ep->xfer_buff,
@@ -1095,6 +1122,12 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
       {
         (void)USB_ReadPacket(USBx, (uint8_t *)hpcd->Setup, 8U);
         ep->xfer_count += (temp & USB_OTG_GRXSTSP_BCNT) >> 4;
+        /*
+          uint8_t   *xfer_buff;           //*!< Pointer to transfer buffer                                               
+          uint32_t  dma_addr;             //*!< 32 bits aligned transfer buffer address                                  
+          uint32_t  xfer_len;             //*!< Current transfer length                                                  
+          uint32_t  xfer_count;           //*!< Partial transfer length in case of multi packet transfer                 
+        */
       }
       else
       {
@@ -1103,13 +1136,18 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
       USB_UNMASK_INTERRUPT(hpcd->Instance, USB_OTG_GINTSTS_RXFLVL);
     }
 
+    /*bit19 out endpoint interrupt*/
     if (__HAL_PCD_GET_FLAG(hpcd, USB_OTG_GINTSTS_OEPINT))
     {
       epnum = 0U;
 
       /* Read in the device interrupt bits */
+      /*return the USB device OUT endpoints interrupt status*/
+      /*read all endpoints interrupt, max 16 channles*/
+      /* bit31-16 belong to out endpoint, bit15-0 belong to in endpoints*/
       ep_intr = USB_ReadDevAllOutEpInterrupt(hpcd->Instance);
 
+      /* do all the out endpoint interrupt, more than once */
       while (ep_intr != 0U)
       {
         if ((ep_intr & 0x1U) != 0U)
@@ -1216,9 +1254,12 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
     }
 
     /* Handle Resume Interrupt */
+    /*device mode, this interrupt is asserted when a resume is detected on the usb*/
+    /*lpm the interrupt is asserted for either host initiated resume or device initiated remote wakup*/
     if (__HAL_PCD_GET_FLAG(hpcd, USB_OTG_GINTSTS_WKUINT))
     {
       /* Clear the Remote Wake-up Signaling */
+      /*device control register 0x804*/
       USBx_DEVICE->DCTL &= ~USB_OTG_DCTL_RWUSIG;
 
       if (hpcd->LPM_State == LPM_L1)
@@ -1298,10 +1339,13 @@ void HAL_PCD_IRQHandler(PCD_HandleTypeDef *hpcd)
         USBx_OUTEP(i)->DOEPCTL &= ~USB_OTG_DOEPCTL_STALL;
         USBx_OUTEP(i)->DOEPCTL |= USB_OTG_DOEPCTL_SNAK;
       }
+
+      /* unmask enpoint in0 & out0*/
       USBx_DEVICE->DAINTMSK |= 0x10001U;
 
       if (hpcd->Init.use_dedicated_ep1 != 0U)
       {
+        /*endpoint 1 terrrupt*/
         USBx_DEVICE->DOUTEP1MSK |= USB_OTG_DOEPMSK_STUPM |
                                    USB_OTG_DOEPMSK_XFRCM |
                                    USB_OTG_DOEPMSK_EPDM;

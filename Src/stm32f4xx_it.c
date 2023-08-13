@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,6 +61,8 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 extern DMA_HandleTypeDef hdma_uart5_rx;
 extern DMA_HandleTypeDef hdma_uart5_tx;
 extern UART_HandleTypeDef huart5;
+
+uint32_t usb_int_counter = 0;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -248,8 +251,9 @@ void UART5_IRQHandler(void)
 void OTG_HS_EP1_OUT_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_EP1_OUT_IRQn 0 */
-  while(1);
+  
   /* USER CODE END OTG_HS_EP1_OUT_IRQn 0 */
+  Debug_Print("OTG_HS_EP1_OUT_IRQHandler called.\n");
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_EP1_OUT_IRQn 1 */
 
@@ -262,7 +266,7 @@ void OTG_HS_EP1_OUT_IRQHandler(void)
 void OTG_HS_EP1_IN_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_EP1_IN_IRQn 0 */
-  while(1);
+  Debug_Print("OTG_HS_EP1_IN_IRQHandler called.\n");
   /* USER CODE END OTG_HS_EP1_IN_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_EP1_IN_IRQn 1 */
@@ -276,8 +280,9 @@ void OTG_HS_EP1_IN_IRQHandler(void)
 void OTG_HS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_IRQn 0 */
-
+  //Debug_Print("OTG_HS_IRQHandler.\n");
   /* USER CODE END OTG_HS_IRQn 0 */
+  usb_int_counter++;
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_IRQn 1 */
 
