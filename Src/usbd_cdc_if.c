@@ -100,7 +100,9 @@ uint8_t UserRxBufferHS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferHS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-
+static uint8_t lineCoding[7] // <------- add these three lines
+// 115200bps, 1stop, no parity, 8bit
+= {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08};
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -227,12 +229,12 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /*                                        4 - Space                            */
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
-  case CDC_SET_LINE_CODING:
-
+  case CDC_SET_LINE_CODING: 
+  memcpy( lineCoding, pbuf, sizeof(lineCoding) ); // <-- add this line
     break;
 
   case CDC_GET_LINE_CODING:
-
+  memcpy( pbuf, lineCoding, sizeof(lineCoding) ); // <-- add this line
     break;
 
   case CDC_SET_CONTROL_LINE_STATE:
