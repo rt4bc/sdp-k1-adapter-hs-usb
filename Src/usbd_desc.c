@@ -168,9 +168,14 @@ __ALIGN_BEGIN uint8_t USBD_HS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
 #endif /* (USBD_LPM_ENABLED == 1) */
 
   0x02,
-  0x02,                       /*bDeviceClass*/
-  0x02,                       /*bDeviceSubClass*/
-  0x00,                       /*bDeviceProtocol*/
+  0xEF, /*bDeviceClass*/ 
+        /*0x00 Use class code info from Interface Descriptors */ 
+        /*0x02 Communications and CDC Control*/
+        /*0xEF, Misc*/
+  0x02, /*bDeviceSubClass*/
+        /*common 0x02*/
+  0x01, /*bDeviceProtocol*/
+        /*IAD */
   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
   LOBYTE(USBD_VID),           /*idVendor*/
   HIBYTE(USBD_VID),           /*idVendor*/

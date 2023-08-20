@@ -62,7 +62,6 @@ extern DMA_HandleTypeDef hdma_uart5_rx;
 extern DMA_HandleTypeDef hdma_uart5_tx;
 extern UART_HandleTypeDef huart5;
 
-uint32_t usb_int_counter = 0;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -282,7 +281,6 @@ void OTG_HS_IRQHandler(void)
   /* USER CODE BEGIN OTG_HS_IRQn 0 */
   //Debug_Print("OTG_HS_IRQHandler.\n");
   /* USER CODE END OTG_HS_IRQn 0 */
-  usb_int_counter++;
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_IRQn 1 */
 

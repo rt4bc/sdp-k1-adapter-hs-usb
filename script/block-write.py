@@ -15,13 +15,10 @@ def main():
     ser.stopbits = serial.STOPBITS_ONE
     ser.timeout = 0.1
 
-    packet_size = 512
-    packet = bytearray()
-    for i in range(packet_size):
-        packet.append(0xa5)
-    ser.open()
+    packet_size = 4*1024*1024
+    packet = bytearray(packet_size)
     start =time.time()
-    loop_size = 1024
+    loop_size = 1
     for i in range(loop_size):
         ser.write(packet)
     end = time.time()

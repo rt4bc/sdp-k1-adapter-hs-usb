@@ -100,7 +100,7 @@ uint8_t UserRxBufferHS[APP_RX_DATA_SIZE];
 uint8_t UserTxBufferHS[APP_TX_DATA_SIZE];
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-uint32_t rx_len = 0;
+
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -268,9 +268,9 @@ static int8_t CDC_Control_HS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
 static int8_t CDC_Receive_HS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 11 */
+  //CDC_Transmit_HS(Buf, *Len);
   USBD_CDC_SetRxBuffer(&hUsbDeviceHS, &Buf[0]);
   USBD_CDC_ReceivePacket(&hUsbDeviceHS);
-  rx_len = *Len;
   return (USBD_OK);
   /* USER CODE END 11 */
 }

@@ -51,9 +51,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-extern uint32_t usb_int_counter;
-extern uint32_t rx_len;
-extern uint8_t UserRxBufferHS[];
+extern UserRxBufferHS[];
+uint8_t usb_out_buf[16];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -108,23 +107,15 @@ int main(void)
 
   MX_USB_DEVICE_Init();
   /* USER CODE END 2 */
-  uint32_t loop;
-  uint32_t len;
-  loop = 0;
-  uint8_t buf[128];
-  rx_len = 0;
-  /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE BEGIN 3 */
     HAL_Delay(1000);
-    //if(rx_len>0)
-    //{
-    //  
-    //  HAL_UART_Transmit(&huart5, UserRxBufferHS, rx_len, HAL_MAX_DELAY);
-    //  rx_len = 0;
-    //}
+    //usb_out_buf[0] = hcdc->RxLength;
+    usb_out_buf[0] = UserRxBufferHS[0];
+    Debug_Print("usb_out_buf[0] = %d\n", usb_out_buf[0]);
+
   }
   /* USER CODE END 3 */
 }

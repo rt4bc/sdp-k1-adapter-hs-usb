@@ -57,6 +57,7 @@ EndBSPDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc.h"
+#include "usbd_hid.h"
 #include "usbd_ctlreq.h"
 
 
@@ -166,12 +167,22 @@ __ALIGN_BEGIN static uint8_t USBD_CDC_CfgHSDesc[USB_CDC_CONFIG_DESC_SIZ] __ALIGN
   0x02,                                       /* bNumInterfaces: 2 interface */
   0x01,                                       /* bConfigurationValue: Configuration value */
   0x00,                                       /* iConfiguration: Index of string descriptor describing the configuration */
-  0xC0,                                       /* bmAttributes: self powered */
-  0x32,                                       /* MaxPower 0 mA */
-
+  0x80,                                       /* bmAttributes: self powered */
+  0xFA,                                       /* MaxPower 0 mA */
+#if 1
   /*---------------------------------------------------------------------------*/
+  /*Add IAD Interface */
+  0x08,
+  0x0B,  /*Interface Association Descriptor */
+  0x00,  /* start from interface 0*/
+  0x02,  /* total 2 interface*/
+  0x02,  /* function class, Comunications and CDC control*/
+  0x02,  /* function subclass*/
+  0x00,  /* function protocol 0x00*/
+  0x00,  /* string index, no*/
 
-  /* Interface Descriptor */
+#endif
+  /* Interface Descriptor */  
   0x09,                                       /* bLength: Interface Descriptor size */
   USB_DESC_TYPE_INTERFACE,                    /* bDescriptorType: Interface */
                                               /* Interface descriptor type */
@@ -247,9 +258,56 @@ __ALIGN_BEGIN static uint8_t USBD_CDC_CfgHSDesc[USB_CDC_CONFIG_DESC_SIZ] __ALIGN
   0x02,                                       /* bmAttributes: Bulk */
   LOBYTE(CDC_DATA_HS_MAX_PACKET_SIZE),        /* wMaxPacketSize: */
   HIBYTE(CDC_DATA_HS_MAX_PACKET_SIZE),
-  0x00                                        /* bInterval: ignore for Bulk transfer */
+  0x00,                                        /* bInterval: ignore for Bulk transfer */
+#if 0
+  /* third interface new add*/
+  /* Interface Descriptor */  
+  0x09,                                       /* bLength: Interface Descriptor size */
+  USB_DESC_TYPE_INTERFACE,                    /* bDescriptorType: Interface */
+  0x02,                                       /* bInterfaceNumber: Number of Interface */
+  0x00,                                       /* bAlternateSetting: Alternate setting */
+  0x02,                                       /* bNumEndpoints: One endpoints used */
+  0x03,                                       /* bInterfaceClass: HID - Human Interface Device */
+  0x00,                                       /* bInterfaceSubClass: No Subclass */
+  0x00,                                       /* bInterfaceProtocol: None */
+  0x00,                                       /* iInterface: */
+
+  
+  0x09,                           /* bLength: HID Descriptor size */
+  HID_DESCRIPTOR_TYPE,            /* bDescriptorType: HID */
+  0x11,                           /* bcdHID: HID Class Spec release number */
+  0x01,
+
+  0x00,    /* bCountryCode: Hardware target country */
+  0x01,    /* bNumDescriptors: Number of HID class descriptors to follow */
+  0x22,    /* bDescriptorType */
+  0x02,    /* wItemLength: Total length of Report descriptor */
+  0x00,
+
+  /******************** Descriptor of custom endpoint ********************/
+  0x07,                                               /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,                             /* bDescriptorType: */
+
+  0x84,                                               /* bEndpointAddress: Endpoint Address (IN) */
+  0x03,                                               /* bmAttributes: Interrupt endpoint */
+  HID_EPIN_SIZE,                                      /* wMaxPacketSize: 4 Byte max */
+  0x00,
+  HID_HS_BINTERVAL,                                   /* bInterval: Polling Interval */
+
+
+  /******************** Descriptor of custom endpoint ********************/
+  0x07,                                               /* bLength: Endpoint Descriptor size */
+  USB_DESC_TYPE_ENDPOINT,                             /* bDescriptorType: */
+
+  0x03,                                               /* bEndpointAddress: Endpoint Address (IN) */
+  0x04,                                               /* bmAttributes: Interrupt endpoint */
+  HID_EPIN_SIZE,                                      /* wMaxPacketSize: 4 Byte max */
+  0x00,
+  HID_HS_BINTERVAL,                                   /* bInterval: Polling Interval */
+#endif
 };
 
+__ALIGN_BEGIN static uint8_t HID_CUSTOM_ReportDesc[2] __ALIGN_END = {};
 
 /* USB CDC device Configuration Descriptor */
 __ALIGN_BEGIN static uint8_t USBD_CDC_CfgFSDesc[USB_CDC_CONFIG_DESC_SIZ] __ALIGN_END =
@@ -438,6 +496,7 @@ __ALIGN_BEGIN static uint8_t USBD_CDC_OtherSpeedCfgDesc[USB_CDC_CONFIG_DESC_SIZ]
   0x00                                        /* bInterval */
 };
 
+
 /**
   * @}
   */
@@ -578,6 +637,8 @@ static uint8_t USBD_CDC_Setup(USBD_HandleTypeDef *pdev,
 {
   USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef *)pdev->pClassData;
   uint8_t ifalt = 0U;
+  uint16_t len = 0U;
+  uint8_t  *pbuf = NULL;
   uint16_t status_info = 0U;
   USBD_StatusTypeDef ret = USBD_OK;
 
@@ -612,6 +673,11 @@ static uint8_t USBD_CDC_Setup(USBD_HandleTypeDef *pdev,
   case USB_REQ_TYPE_STANDARD:
     switch (req->bRequest)
     {
+    
+    case USB_REQ_GET_DESCRIPTOR:
+      while(1);
+    break;
+
     case USB_REQ_GET_STATUS:
       if (pdev->dev_state == USBD_STATE_CONFIGURED)
       {

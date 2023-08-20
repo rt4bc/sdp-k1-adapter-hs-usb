@@ -192,7 +192,6 @@ void OTG_HS_IRQHandler(void)
   /* USER CODE BEGIN OTG_HS_IRQn 0 */
   //Debug_Print("OTG_HS_IRQHandler.\n");
   /* USER CODE END OTG_HS_IRQn 0 */
-  usb_int_counter++;
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
   /* USER CODE BEGIN OTG_HS_IRQn 1 */
 
@@ -201,3 +200,11 @@ void OTG_HS_IRQHandler(void)
 ```
 All the interrupt including setup, and normal transceiver packet parse will be done
 in this function.
+
+# USB Enumerate Flow
+## Get Device Descriptor
+
+## Reset Device
+
+## Set USB Device Address
+
